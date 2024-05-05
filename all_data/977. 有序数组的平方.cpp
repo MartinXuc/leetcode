@@ -1,0 +1,121 @@
+// https://leetcode.cn/problems/squares-of-a-sorted-array/
+
+class Solution
+{
+public:
+    vector<int> sortedSquares(vector<int> &nums)
+    {
+        // 使用二分查找找到原数组的拐点
+        int left = 0, right = nums.size() - 1;
+        int middle;
+        while (left <= right)
+        {
+            middle = (left + right) / 2;
+            // 到达边界，直接退出
+            if (middle == 0 || middle == nums.size() - 1)
+                break;
+            // 看看当前点是否是要找的点
+            if (nums[middle] < 0)
+            {
+                if (nums[middle + 1] > 0)
+                {
+                    break;
+                }
+                else
+                {
+                    left = middle + 1;
+                }
+            }
+            else if (nums[middle] > 0)
+            {
+                if (nums[middle - 1] < 0)
+                {
+                    break;
+                }
+                else
+                {
+                    right = middle - 1;
+                }
+            }
+            else
+            {
+                break;
+            }
+        }
+        vector<int> ans;
+        // 先判断一下当前指针边界状态
+        if (middle == 0)
+        {
+            for (int i = 1; i < nums.size(); i++)
+            {
+                ans.push_back(nums[i] * nums[i]);
+                // print_v(ans);
+                return ans;
+            }
+        }
+        if (middle == nums.size() - 1)
+        {
+            for (int i = nums.size() - 2; i >= 0; i--)
+            {
+                ans.push_back(nums[i] * nums[i]);
+                // print_v(ans);
+                return ans;
+            }
+        }
+        // 到这里就确保middle不是在边界上
+        // 使用双指针法构建新数组
+        // 初始化双指针
+        int left_index = middle;
+        int right_index = middle;
+        if (nums[middle] > 0)
+            left_index--;
+        else if (nums[middle] <= 0)
+            right_index++;
+        // 开始构建
+        while (1)
+        {
+            // 先处理边界情况
+            if (left_index == -1)
+            {
+                for (int i = right_index; i < nums.size(); i++)
+                {
+                    ans.push_back(nums[i] * nums[i]);
+                    // print_v(ans);
+                    return ans;
+                }
+            }
+            if (right_index == nums.size())
+            {
+                for (int i = left_index; i >= 0; i--)
+                {
+                    ans.push_back(nums[i] * nums[i]);
+                    // print_v(ans);
+                    return ans;
+                }
+            }
+            // 初始化两个指针位置的平方
+            int left2 = nums[left_index] * nums[left_index];
+            int right2 = nums[right_index] * nums[right_index];
+            // 比较大小
+            if (left2 <= right2)
+            {
+                ans.push_back(left2);
+                // print_v(ans);
+                left_index--;
+            }
+            else
+            {
+                ans.push_back(right2);
+                // print_v(ans);
+                right_index++;
+            }
+        }
+    }
+    // void print_v(vector<int> & a){
+    //     cout<<'[';
+    //     for(int i = 0; i < a.size(); i++){
+    //         cout << a[i] << ',' << ' ';
+    //     }
+    //     cout<<']';
+    // }
+};
